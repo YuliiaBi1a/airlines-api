@@ -1,7 +1,10 @@
 package com.yuliia.airlines_api.airports;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -13,7 +16,13 @@ public class AirportService {
         this.airportRepository = airportRepository;
     }
 
-    //Post new airport
+    //Get all airports
+    public List<AirportDtoResponse> findAllAirports(){
+        List<Airport> airportList = airportRepository.findAll();
+        return airportList.stream().map(AirportDtoResponse::fromEntity).toList();
+    }
+
+    //Post a new airport
     public AirportDtoResponse createAirport(AirportDtoRequest request){
         Optional<Airport> optionalAirport = airportRepository.findByCode(request.code());
         if(optionalAirport.isPresent()){
@@ -23,5 +32,42 @@ public class AirportService {
         Airport saveAirport = airportRepository.save(newAirport);
 
         return AirportDtoResponse.fromEntity(saveAirport);
+    }
+    // Search an airport like name or code
+    public List<AirportDtoResponse> searchByNameOrCode(String name, String code) {
+        List<Airport> playerList = airportRepository.findByNameOrCode(name, code);
+        if (playerList.isEmpty()) {
+            throw new RuntimeException("Airport not found");
+        }
+        return playerList.stream()
+                .map(AirportDtoResponse::fromEntity).toList();
+    }
+
+    // Update an airport
+    public AirportDtoResponse updateAirport(Long id, AirportDtoRequest request) {
+        Airport existingAirport = airportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Airport with code" + id + " not found."));
+
+        Optional<Airport> conflictingAirport = airportRepository.findByCode(request.code());
+        if (conflictingAirport.isPresent() && !conflictingAirport.get().getId().equals(existingAirport.getId())) {
+            throw new RuntimeException("An airport with code " + request.code() + " already exists.");
+        }
+
+        existingAirport.setName(request.name());
+        existingAirport.setCity(request.city());
+        existingAirport.setCountry(request.country());
+        existingAirport.setCode(request.code());
+
+        Airport updatedAirport = airportRepository.save(existingAirport);
+        return AirportDtoResponse.fromEntity(updatedAirport);
+    }
+
+    // Delete an airport
+    @Transactional
+    public void deleteAirportById(Long id) {
+        if (!airportRepository.existsById(id)) {
+            throw  new RuntimeException("Airport with code " + id + " not found.");
+        }
+        airportRepository.deleteById(id);
     }
 }
