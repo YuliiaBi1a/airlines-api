@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "airports")
 public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
