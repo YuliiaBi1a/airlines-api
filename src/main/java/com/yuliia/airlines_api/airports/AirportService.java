@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -46,7 +45,7 @@ public class AirportService {
     // Update an airport
     public AirportDtoResponse updateAirport(Long id, AirportDtoRequest request) {
         Airport existingAirport = airportRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Airport with code" + id + " not found."));
+                .orElseThrow(() -> new RuntimeException("Airport with id" + id + " not found."));
 
         Optional<Airport> conflictingAirport = airportRepository.findByCode(request.code());
         if (conflictingAirport.isPresent() && !conflictingAirport.get().getId().equals(existingAirport.getId())) {
@@ -66,7 +65,7 @@ public class AirportService {
     @Transactional
     public void deleteAirportById(Long id) {
         if (!airportRepository.existsById(id)) {
-            throw  new RuntimeException("Airport with code " + id + " not found.");
+            throw  new RuntimeException("Airport with id " + id + " not found.");
         }
         airportRepository.deleteById(id);
     }

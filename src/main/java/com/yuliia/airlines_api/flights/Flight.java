@@ -21,27 +21,27 @@ public class Flight {
 
     @ManyToOne
     @JoinColumn(name = "departure_airport_id")
-    private Airport departure_airport;
+    private Airport departureAirport;
 
     @ManyToOne
     @JoinColumn(name = "arrival_airport_id")
-    private Airport arrival_airport;
+    private Airport arrivalAirport;
 
-    private LocalDateTime departure_time;
-    private LocalDateTime arrival_time;
-    private int available_seats;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
+    private int availableSeats;
 
     @Enumerated(EnumType.STRING)
     private FlightStatus status = FlightStatus.AVAILABLE;
 
     private double price;
 
-    public Flight(Airport departure_airport, Airport arrival_airport, LocalDateTime departure_time, LocalDateTime arrival_time, int available_seats, FlightStatus status, double price) {
-        this.departure_airport = departure_airport;
-        this.arrival_airport = arrival_airport;
-        this.departure_time = departure_time;
-        this.arrival_time = arrival_time;
-        this.available_seats = available_seats;
+    public Flight(Airport departureAirport, Airport arrivalAirport, LocalDateTime departureTime, LocalDateTime arrivalTime, int availableSeats, FlightStatus status, double price) {
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.availableSeats = availableSeats;
         this.status = status;
         this.price = price;
     }

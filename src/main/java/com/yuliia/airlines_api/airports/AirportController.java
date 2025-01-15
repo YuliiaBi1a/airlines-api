@@ -1,7 +1,5 @@
 package com.yuliia.airlines_api.airports;
 
-import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +18,8 @@ public class AirportController {
 
     //search by name or code / getAll
     @GetMapping("/public/airports")
-    public ResponseEntity<List<AirportDtoResponse>> getPlayerList( @RequestParam(required = false) String name,
-                                                                   @RequestParam(required = false) String code) {
+    public ResponseEntity<List<AirportDtoResponse>> getPlayerList(@RequestParam(required = false) String name,
+                                                                 @RequestParam(required = false) String code) {
         if (name == null && code== null) {
             List<AirportDtoResponse> airports = airportService.findAllAirports();
             return new ResponseEntity<>(airports, HttpStatus.OK);
@@ -42,7 +40,7 @@ public class AirportController {
     }
 
     @DeleteMapping("/private/airports/{id}")
-    public ResponseEntity<String> deleteGame(@PathVariable Long id) {
+    public ResponseEntity<String> deleteAirport(@PathVariable Long id) {
         airportService.deleteAirportById(id);
         return new ResponseEntity<>("Airport has been deleted successfully.", HttpStatus.NO_CONTENT);
     }
