@@ -1,5 +1,6 @@
 package com.yuliia.airlines_api.users;
 
+import com.yuliia.airlines_api.profiles.Profile;
 import com.yuliia.airlines_api.roles.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,20 +24,21 @@ public class User {
     private String username;
     private String password;
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-      /*  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Profile profile;*/
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Profile profile;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "roles_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     Set<Role> roles;
 
-/*    public User(String username, String password, Profile profile) {
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+     public User(String username, String password, Profile profile) {
         this.username = username;
         this.password = password;
         this.profile = profile;
-    }*/
+    }
 }

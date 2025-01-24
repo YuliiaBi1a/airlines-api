@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers(endpoint + "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/register/users").permitAll());
                         /*.requestMatchers(endpoint + "/login").hasAnyRole("USER", "ADMIN") // principio de mínimos
