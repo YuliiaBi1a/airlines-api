@@ -30,3 +30,9 @@ INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, a
 VALUES (8, 9, '2025-01-28 08:00:00', '2025-01-28T20:00:00', 250, 'AVAILABLE', 700.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
 VALUES (9, 10, '2025-01-30 13:00:00', '2025-01-30T23:30:00', 160, 'AVAILABLE', 500.00);
+
+--Role
+INSERT INTO roles (id, name) VALUES (1, 'ROLE_CLIENT');
+INSERT INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
+
+--User ADM
