@@ -43,7 +43,7 @@ public class FlightService {
         return playerList.stream()
                 .map(AirportDtoResponse::fromEntity).toList();
     }*/
-    // Update an airport
+    // Update flight
     public FlightDtoResponse updateFlight(Long id, FlightDtoRequest request) {
         Flight existingFlight = flightRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flight with id" + id + " not found."));
