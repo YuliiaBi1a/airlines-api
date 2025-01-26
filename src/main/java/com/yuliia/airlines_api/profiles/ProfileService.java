@@ -3,6 +3,7 @@ package com.yuliia.airlines_api.profiles;
 import com.yuliia.airlines_api.storage.FileStorageService;
 import com.yuliia.airlines_api.users.User;
 import com.yuliia.airlines_api.users.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
-// TODO cambiar a variable de entorno
-    private static final String DEFAULT_IMAGE_URL = "http://localhost:8080/uploads/images/default.png";
+    @Value("${default.image.url}")
+    private String defaultImageUrl;
 
     public ProfileService(ProfileRepository profileRepository, UserRepository userRepository, FileStorageService fileStorageService) {
         this.profileRepository = profileRepository;
@@ -34,7 +35,7 @@ public class ProfileService {
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new RuntimeException("User with id " + request.userId() + " not found"));
 
-                String imgUrl = DEFAULT_IMAGE_URL;
+                String imgUrl = defaultImageUrl;
         if (request.file() != null && !request.file().isEmpty()) {
             imgUrl = fileStorageService.imgUpload(request.file());
         }
@@ -56,21 +57,27 @@ public class ProfileService {
         Profile existingProfile = profileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Profile with id " + id + " not found."));
 
-        // Якщо файл завантажено, заміняємо поточне зображення. Якщо ні, зберігаємо попереднє
-        String imgUrl = existingProfile.getImage();
+        String oldImgUrl = existingProfile.getImage();
+        String newImgUrl = oldImgUrl;
+
         if (request.file() != null && !request.file().isEmpty()) {
-            imgUrl = fileStorageService.imgUpload(request.file());
+            newImgUrl = fileStorageService.imgUpload(request.file());
+
+            if (oldImgUrl != null && !oldImgUrl.equals(defaultImageUrl)) {
+                fileStorageService.deleteImg(oldImgUrl);
+            }
         }
 
         existingProfile.setName(request.name());
         existingProfile.setSurname(request.surname());
         existingProfile.setEmail(request.email());
-        existingProfile.setImage(imgUrl);
+        existingProfile.setImage(newImgUrl);
         existingProfile.setPhone(request.phone());
 
         Profile updatedProfile = profileRepository.save(existingProfile);
         return ProfileDtoResponse.fromEntity(updatedProfile);
     }
+
 
     // Delete profile
     public void deleteProfileById(Long id) {
@@ -80,7 +87,7 @@ public class ProfileService {
         }
         String imgUrlToDelete = optionalProfile.get().getImage();
 
-        if (!DEFAULT_IMAGE_URL.equals(imgUrlToDelete)) {
+        if (!defaultImageUrl.equals(imgUrlToDelete)) {
             fileStorageService.deleteImg(imgUrlToDelete);
         }
 

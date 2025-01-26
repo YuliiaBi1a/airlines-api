@@ -21,20 +21,26 @@ public class ProfileController {
         List<ProfileDtoResponse> profiles = profileService.findAllProfiles();
         return new ResponseEntity<>(profiles, HttpStatus.OK);
     }
+
+    @GetMapping("/public/profiles/{id}")
+    public ResponseEntity<ProfileDtoResponse> getProfileList(@PathVariable Long id) {
+        ProfileDtoResponse profile = profileService.findProfileById(id);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
+    }
     @PostMapping("/public/profiles")
     public ResponseEntity<ProfileDtoResponse> saveNewProfile(@ModelAttribute ProfileDtoRequest request){
         ProfileDtoResponse newProfile = profileService.createProfile(request);
         return new ResponseEntity<>(newProfile, HttpStatus.CREATED);
     }
-   /* @PutMapping("/private/flights/{id}")
-    public ResponseEntity<FlightDtoResponse> putFlight(@PathVariable Long id, @RequestBody FlightDtoRequest request) {
-        FlightDtoResponse updatedFlight = flightService.updateFlight(id, request);
-        return new ResponseEntity<>(updatedFlight, HttpStatus.OK);
+   @PutMapping("/public/profiles/{id}")
+    public ResponseEntity<ProfileDtoResponse> putProfile(@PathVariable Long id, @ModelAttribute ProfileDtoRequest request) {
+        ProfileDtoResponse updatedProfile = profileService.updateProfile(id, request);
+        return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
     }
 
-    @DeleteMapping("/private/flights/{id}")
+    @DeleteMapping("/public/profiles/{id}")
     public ResponseEntity<String> deleteFlight(@PathVariable Long id) {
-        flightService.deleteFlightById(id);
+        profileService.deleteProfileById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }*/
+    }
 }
