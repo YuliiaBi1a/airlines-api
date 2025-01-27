@@ -73,5 +73,5 @@ public class FlightService {
         }
         flightRepository.deleteById(id);
     }
-
+// TODO método que automáticamente cambia estado de vuelo a EXPIRED si vuelo esta fuera de la fecha
 }
