@@ -34,8 +34,8 @@ public class ReservationService {
         Flight flight = flightRepository.findById(request.flightId())
                 .orElseThrow(() -> new RuntimeException("Flight with id " + request.flightId()+ " not found"));
 
-        if (LocalDateTime.now().isBefore(flight.getDepartureTime())) {
-            throw new RuntimeException("Reservations can only be realised before the flight departure.");
+        if (LocalDateTime.now().isAfter(flight.getDepartureTime())) {
+            throw new RuntimeException("Reservations can only be realized before the flight departure.");
         }
         reserveAvailableSeats(request, flight);
 
@@ -62,7 +62,7 @@ public class ReservationService {
         Flight flight = existingReservation.getFlight();
         LocalTime currentTime = LocalTime.now();
         LocalTime reservationTime = existingReservation.getReservationTime();
-        LocalTime lockExpirationTime = reservationTime.plusMinutes(15);
+        LocalTime lockExpirationTime = reservationTime.plusMinutes(2);
 
         if (currentTime.isBefore(lockExpirationTime) && lockExpirationTime.isAfter(reservationTime)) {
             existingReservation.setStatus(ReservationStatus.CONFIRMED);
@@ -107,14 +107,15 @@ public class ReservationService {
     }
 
 // Automáticamente cambiamos estado de reserva a outdated si vuelo ya esta realizado
+// Testeado con Postman ++
 public void updateOutdatedReservations() {
     List<Reservation> confirmedReservations = reservationRepository.findConfirmedAndOutdatedReservations(LocalDateTime.now());
     confirmedReservations.forEach(reservation -> reservation.setStatus(ReservationStatus.OUTDATED));
     reservationRepository.saveAll(confirmedReservations);
 }
 
-
-    //Comprobamos si hay asientos disponibles, si has reservado últimos asientos - cambiamos estado de vuelo a FULL
+//---------------------------------------------------------------------//
+//Comprobamos si hay asientos disponibles, si has reservado últimos asientos - cambiamos estado de vuelo a FULL
     private static void reserveAvailableSeats(ReservationDtoRequest request, Flight flight) {
         int availableSeats = flight.getAvailableSeats();
         if(availableSeats >= request.reservedSeats()){

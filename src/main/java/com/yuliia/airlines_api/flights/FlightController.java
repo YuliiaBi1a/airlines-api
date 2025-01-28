@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,6 +21,25 @@ private final FlightService flightService;
             List<FlightDtoResponse> flights = flightService.findAllFlights();
             return new ResponseEntity<>(flights, HttpStatus.OK);
         }
+
+    @GetMapping("/public/flights/search")
+    public ResponseEntity<List<FlightDtoResponse>> searchFlights(
+            @RequestParam(required = false) String departureAirportCode,
+            @RequestParam(required = false) String departureAirportName,
+            @RequestParam(required = false) String arrivalAirportCode,
+            @RequestParam(required = false) String arrivalAirportName,
+            @RequestParam(required = false) String departureDate,
+            @RequestParam(required = false, defaultValue = "0") int requiredSeats) {
+
+        LocalDate date = (departureDate != null) ? LocalDate.parse(departureDate) : null;
+
+        List<FlightDtoResponse> flights = flightService.filterFlights( departureAirportCode, departureAirportName,
+                arrivalAirportCode, arrivalAirportName,
+                date, requiredSeats);
+
+        return new ResponseEntity<>(flights, HttpStatus.OK);
+    }
+
     @PostMapping("/private/flights")
     public ResponseEntity<FlightDtoResponse> saveNewFlight(@RequestBody FlightDtoRequest request){
         FlightDtoResponse newFlight = flightService.createFlight(request);

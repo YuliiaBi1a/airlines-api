@@ -13,23 +13,21 @@ INSERT INTO airports (name, city, country, code) VALUES ('Los Angeles Internatio
 --Flight
 
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (1, 2, '2025-01-10 14:00:00', '2025-01-10T18:00:00', 150, 'AVAILABLE', 300.00);
+VALUES (1, 2, '2025-01-10 14:00:00', '2025-01-10T18:00:00', 150, 'EXPIRED', 300.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (2, 3, '2025-01-12 09:00:00', '2025-01-12T13:00:00', 100, 'AVAILABLE', 250.00);
+VALUES (2, 3, '2025-02-12 09:00:00', '2025-01-12T13:00:00', 100, 'AVAILABLE', 250.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (3, 4, '2025-01-15 20:00:00', '2025-01-16T04:00:00', 120, 'AVAILABLE', 350.00);
+VALUES (3, 4, '2025-02-15 20:00:00', '2025-01-16T04:00:00', 120, 'AVAILABLE', 350.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (4, 5, '2025-01-18 07:00:00', '2025-01-18T11:00:00', 200, 'AVAILABLE', 400.00);
+VALUES (4, 5, '2025-02-18 07:00:00', '2025-01-18T11:00:00', 200, 'AVAILABLE', 400.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (5, 6, '2025-01-20 10:30:00', '2025-01-20T15:00:00', 180, 'AVAILABLE', 450.00);
+VALUES (5, 6, '2025-02-20 10:30:00', '2025-01-20T15:00:00', 180, 'AVAILABLE', 450.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (6, 7, '2025-01-22 12:00:00', '2025-01-22T16:30:00', 140, 'AVAILABLE', 500.00);
+VALUES (6, 7, '2025-02-22 12:00:00', '2025-01-22T16:30:00', 140, 'AVAILABLE', 500.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (7, 8, '2025-01-25 18:00:00', '2025-01-26T06:00:00', 220, 'AVAILABLE', 600.00);
+VALUES (7, 8, '2025-02-25 18:00:00', '2025-01-26T06:00:00', 220, 'AVAILABLE', 600.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (8, 9, '2025-01-28 08:00:00', '2025-01-28T20:00:00', 250, 'AVAILABLE', 700.00);
-INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
-VALUES (9, 10, '2025-01-30 13:00:00', '2025-01-30T23:30:00', 160, 'AVAILABLE', 500.00);
+VALUES (8, 9, '2025-02-28 08:00:00', '2025-01-28T20:00:00', 250, 'AVAILABLE', 700.00);
 
 --Role
 INSERT INTO roles (id, name) VALUES (1, 'ROLE_CLIENT');

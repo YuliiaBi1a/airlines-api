@@ -4,6 +4,9 @@ import com.yuliia.airlines_api.airports.Airport;
 import com.yuliia.airlines_api.airports.AirportRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -11,10 +14,12 @@ public class FlightService {
 
     private final FlightRepository flightRepository;
     private final AirportRepository airportRepository;
+    private final FlightCriteriaRepository flightCriteriaRepository;
 
-    public FlightService(FlightRepository flightRepository, AirportRepository airportRepository) {
+    public FlightService(FlightRepository flightRepository, AirportRepository airportRepository, FlightCriteriaRepository flightCriteriaRepository) {
         this.flightRepository = flightRepository;
         this.airportRepository = airportRepository;
+        this.flightCriteriaRepository = flightCriteriaRepository;
     }
     //Find all flights
     public List<FlightDtoResponse> findAllFlights(){
@@ -34,16 +39,18 @@ public class FlightService {
         Flight saveFlight = flightRepository.save(newFlight);
         return FlightDtoResponse.fromEntity(saveFlight);
     }
-/*    // Search an airport like name or code
-    public List<AirportDtoResponse> searchByNameOrCode(String name, String code) {
-        List<Airport> playerList = airportRepository.findByNameOrCode(name, code);
-        if (playerList.isEmpty()) {
-            throw new RuntimeException("Airport not found");
-        }
-        return playerList.stream()
-                .map(AirportDtoResponse::fromEntity).toList();
-    }*/
-    // Update flight
+
+   // Search flight like arrivalAirport, departureAirport, date, available seats
+   public List<FlightDtoResponse> filterFlights(String departureAirportCode, String departureAirportName,
+                                                String arrivalAirportCode, String arrivalAirportName,
+                                                LocalDate departureDate, int requiredSeats) {
+       List<Flight> searchFlights = flightCriteriaRepository.findFlights(departureAirportCode, departureAirportName,
+               arrivalAirportCode, arrivalAirportName,
+               departureDate, requiredSeats);
+       return searchFlights.stream().map(FlightDtoResponse::fromEntity).toList();
+   }
+
+   // Update flight
     public FlightDtoResponse updateFlight(Long id, FlightDtoRequest request) {
         Flight existingFlight = flightRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flight with id" + id + " not found."));
