@@ -2,11 +2,11 @@
 services:
   db:
     image: postgres:17
-    container_name: airlines_db
+    container_name: airlines_data_base
     environment:
-      POSTGRES_USER: yulia
-      POSTGRES_PASSWORD: yulia
-      POSTGRES_DB: airlines_db
+      POSTGRES_USER: yuliia
+      POSTGRES_PASSWORD: yuliia
+      POSTGRES_DB: airlines_data_base
     ports:
       - "5432:5432"
     volumes:
