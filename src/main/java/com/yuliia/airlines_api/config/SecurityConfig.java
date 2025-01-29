@@ -1,7 +1,6 @@
 package com.yuliia.airlines_api.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +17,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -33,6 +30,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.oauth2.core.authorization.OAuth2AuthorizationManagers.hasAnyScope;
+import static org.springframework.security.oauth2.core.authorization.OAuth2AuthorizationManagers.hasScope;
 
 @Configuration
 @EnableWebSecurity
@@ -59,18 +58,25 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID"))
                 .authorizeHttpRequests(auth -> auth
+                        //full access
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers("/uploads/images/**").permitAll()
-                        .requestMatchers(endpoint + "/auth/token").permitAll()
-                        .requestMatchers(endpoint + "/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, endpoint+ "/register/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,endpoint + "/public/**").hasAnyRole("CLIENT", "ADMIN")
-                        .requestMatchers(endpoint + "/public/**").hasRole("CLIENT")
-                        .requestMatchers(endpoint + "/private/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .userDetailsService(userDetailsService)
+                        .requestMatchers(HttpMethod.POST,  "/api/v1/register/users").permitAll()
+                        .requestMatchers(endpoint + "/auth/token").permitAll() // JWT auth
+                        .requestMatchers(endpoint + "/login").permitAll() //basic auth
+
+                        // Role access
+                        .requestMatchers(endpoint + "/public/**").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers("/uploads/images/**").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.GET,"/private/**").hasRole("ADMIN")
+                        // Scope access
+
+                        .requestMatchers(endpoint + "/private/airports/**").access(hasAnyScope("AIRPORT:ADMIN", "ADMIN"))
+                        .requestMatchers(endpoint + "/private/flights/**").access(hasAnyScope("FLIGHT:ADMIN", "ADMIN"))
+                        .requestMatchers(endpoint + "/private/**").access(hasScope("ADMIN")))
+                        //.anyRequest().authenticated())
+                .userDetailsService(userDetailsService) //for basic auth
                 .httpBasic(withDefaults())
-                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(jwtDecoder())))
+                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(jwtDecoder()))) // for JWT auth
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
@@ -108,40 +114,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-/*    @Bean
-    UserDetailsService userDetailsServiceJwt() {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("yuli")
-                        .password("{noop}yuli")
-                        .authorities("READ", "ROLE_ADMIN")
-                        .build());
-    }*/
 }
-
-
-
-
-/*
- * @Bean
- * public InMemoryUserDetailsManager userDetailsManager() {
- *
- * UserDetails mickey = User.builder()
- * .username("mickey")
- * .password("{noop}mouse")
- * .roles("ADMIN")
- * .build();
- *
- * UserDetails minnie = User.builder()
- * .username("minnie")
- * .password("{noop}mouse")
- * .roles("USER")
- * .build();
- *
- * Collection<UserDetails> users = new ArrayList<>();
- * users.add(mickey);
- * users.add(minnie);
- *
- * return new InMemoryUserDetailsManager(users);
- *
- */
