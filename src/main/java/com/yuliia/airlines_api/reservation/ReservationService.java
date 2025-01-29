@@ -92,16 +92,16 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
     //Clean history reservation: delete canceled and outdated reservations
-    public void deleteCancelledAndOutdatedReservations() {
-        List<Reservation> cancelledReservations = reservationRepository.findByStatus(ReservationStatus.CANCELLED);
-        List<Reservation> outdatedReservations = reservationRepository.findByStatus(ReservationStatus.OUTDATED);
+    public void deleteCancelledAndOutdatedReservations(Long userId) {
+        List<Reservation> cancelledReservations = reservationRepository.findByStatusAndUserId(ReservationStatus.CANCELLED, userId);
+        List<Reservation> outdatedReservations = reservationRepository.findByStatusAndUserId(ReservationStatus.OUTDATED, userId);
 
         Set<Reservation> reservationsToDelete = new HashSet<>();
         reservationsToDelete.addAll(cancelledReservations);
         reservationsToDelete.addAll(outdatedReservations);
 
         if (reservationsToDelete.isEmpty()) {
-            throw new RuntimeException("No cancelled or outdated reservations found.");
+            throw new RuntimeException("No cancelled or outdated reservations found for user with ID: " + userId);
         }
         reservationRepository.deleteAll(reservationsToDelete);
     }

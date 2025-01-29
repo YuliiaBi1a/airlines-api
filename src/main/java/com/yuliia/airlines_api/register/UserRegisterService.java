@@ -24,15 +24,7 @@ public class UserRegisterService {
     public List<User> findAllUsers(){
         return userRepository.findAll();
     }
-    //Post a new user
-/*    public void registerUser(UserDtoRequest request){
-        Optional<User> optionalUser = userRepository.findByUsername(request.username());
-        if(optionalUser.isPresent()){
-            throw new RuntimeException("User with the email " + request.username() + " already exist");
-        }
-        User newUser = request.toEntity();
-        userRepository.save(newUser);
-    }*/
+
     public Map<String, String> registerUser(UserDtoRequest request) {
 
         Optional<User> optionalUser = userRepository.findByUsername(request.username());
@@ -50,6 +42,7 @@ public class UserRegisterService {
         String passwordEncoded = encoder.encode(passwordDecoded);
 
         User newUser = request.toEntity();
+        newUser.setPassword(passwordEncoded);
         newUser.setRoles(roleService.assignDefaultRole());
 
         userRepository.save(newUser);

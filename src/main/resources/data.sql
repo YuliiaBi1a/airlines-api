@@ -34,3 +34,6 @@ INSERT INTO roles (id, name) VALUES (1, 'ROLE_CLIENT');
 INSERT INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
 
 --User ADM
+INSERT INTO users (id, username, password) VALUES (2, 'yuliia', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
+--Users_Roles
+INSERT INTO roles_users (role_id, user_id) VALUES (2, 2);

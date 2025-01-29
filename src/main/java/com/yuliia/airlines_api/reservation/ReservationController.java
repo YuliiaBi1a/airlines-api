@@ -43,10 +43,9 @@ public class ReservationController {
         return new ResponseEntity<>("Reservation has been cancelled", HttpStatus.OK);
     }
 
-    @DeleteMapping("/public/reservations/history/clean")
-    public ResponseEntity<String> deleteCancelledAndOutdatedReservations() {
-        reservationService.deleteCancelledAndOutdatedReservations();
+    @DeleteMapping("/public/reservations/history/clean/{userId}")
+    public ResponseEntity<String> deleteCancelledAndOutdatedReservations(@PathVariable Long userId) {
+        reservationService.deleteCancelledAndOutdatedReservations(userId);
         return new ResponseEntity<>( HttpStatus.NO_CONTENT);
     }
-
 }
