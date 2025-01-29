@@ -33,6 +33,13 @@ VALUES (8, 9, '2025-02-28 08:00:00', '2025-01-28T20:00:00', 250, 'AVAILABLE', 70
 INSERT INTO roles (id, name) VALUES (1, 'ROLE_CLIENT');
 INSERT INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
 
+-- Додаємо authorities
+INSERT INTO authorities (id, name) VALUES (1, 'scope:read');
+INSERT INTO authorities (id, name) VALUES (2, 'scope:write');
+
+-- Зв’язуємо ролі з authorities
+INSERT INTO roles_authorities (role_id, authority_id) VALUES (2, 1); -- ROLE_ADMIN -> scope:read
+INSERT INTO roles_authorities (role_id, authority_id) VALUES (2, 2); -- ROLE_ADMIN -> scope:write
 --User ADM
 INSERT INTO users (id, username, password) VALUES (2, 'yuliia', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
 --Users_Roles

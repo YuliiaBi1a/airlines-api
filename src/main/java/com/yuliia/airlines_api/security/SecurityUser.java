@@ -1,5 +1,6 @@
 package com.yuliia.airlines_api.security;
 
+
 import com.yuliia.airlines_api.roles.Role;
 import com.yuliia.airlines_api.users.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 
 public class SecurityUser implements UserDetails {
@@ -27,7 +29,7 @@ public class SecurityUser implements UserDetails {
         return user.getPassword();
     }
 
-    @Override
+/*    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -40,6 +42,23 @@ public class SecurityUser implements UserDetails {
 
         return authorities;
 
+    }*/
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+
+        for (Role role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+
+            // Додаємо authorities (наприклад, "scope:read")
+            if (role.getAuthorities() != null) {
+                role.getAuthorities().forEach(auth ->
+                        authorities.add(new SimpleGrantedAuthority(auth.getName()))
+                );
+            }
+        }
+        return authorities;
     }
 
     @Override

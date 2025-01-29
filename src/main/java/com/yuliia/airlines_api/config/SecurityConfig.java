@@ -1,6 +1,7 @@
 package com.yuliia.airlines_api.config;
 
-import com.yuliia.airlines_api.security.UserDetailsService;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,10 +10,27 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+
+import javax.crypto.spec.SecretKeySpec;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -20,12 +38,14 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
+    private final String key;
 
     @Value("${api-endpoint}")
     String endpoint;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService, String key) {
         this.userDetailsService = userDetailsService;
+        this.key = key;
     }
 
     @Bean
@@ -41,7 +61,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                         .requestMatchers("/uploads/images/**").permitAll()
-                        /*.requestMatchers(endpoint + "/**").permitAll()*/
+                        .requestMatchers(endpoint + "/auth/token").permitAll()
                         .requestMatchers(endpoint + "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, endpoint+ "/register/**").permitAll()
                         .requestMatchers(HttpMethod.GET,endpoint + "/public/**").hasAnyRole("CLIENT", "ADMIN")
@@ -50,8 +70,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
+                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(jwtDecoder())))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+
 
         http.headers(header -> header.frameOptions(frame -> frame.sameOrigin())); //para h2
 
@@ -62,8 +84,41 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public JwtEncoder jwtEncoder() {
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+        return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey));
+    }
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        byte[] bytes = key.getBytes();
+        SecretKeySpec secretKey = new SecretKeySpec(bytes, 0, bytes.length, "RSA");
+        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
+    }
 
+    @Bean
+    CorsConfigurationSource corsConfiguration() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+/*    @Bean
+    UserDetailsService userDetailsServiceJwt() {
+        return new InMemoryUserDetailsManager(
+                User.withUsername("yuli")
+                        .password("{noop}yuli")
+                        .authorities("READ", "ROLE_ADMIN")
+                        .build());
+    }*/
 }
+
 
 
 

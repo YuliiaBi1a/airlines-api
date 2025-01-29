@@ -1,4 +1,4 @@
-package com.yuliia.airlines_api.auth;
+package com.yuliia.airlines_api.auth.basic;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
