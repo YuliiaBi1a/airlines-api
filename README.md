@@ -181,11 +181,11 @@ git switch feature/login
 
 4. **Run the application**:
    To run the application, first, make sure you have the correct profile active. You can specify the active profile by adding the following to your application.properties (or application-dev.yml and application-test.yml for environment-specific settings):
-   -For test environment:
+- For test environment:
 ```bash
 mvn spring-boot:run -Dspring.profiles.active=test
 ```
--For development environment:
+- For development environment:
 ```bash
 mvn spring-boot:run -Dspring.profiles.active=dev
 ```

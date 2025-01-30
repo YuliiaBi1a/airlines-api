@@ -26,7 +26,6 @@ public class TokenService {
 
         Instant now = Instant.now();
 
-        // recuperar scopes de usuario
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(authority -> !authority.startsWith("ROLE"))

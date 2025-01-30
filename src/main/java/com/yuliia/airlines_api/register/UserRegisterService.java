@@ -20,7 +20,7 @@ public class UserRegisterService {
         this.userRepository = userRepository;
         this.roleService = roleService;
     }
-    //Get all users
+
     public List<User> findAllUsers(){
         return userRepository.findAll();
     }

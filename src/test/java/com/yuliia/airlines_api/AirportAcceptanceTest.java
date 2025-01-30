@@ -41,7 +41,6 @@ public class AirportAcceptanceTest {
                 .build();
     }
 
-
     @Test
     void testCreateAirport() throws Exception {
 

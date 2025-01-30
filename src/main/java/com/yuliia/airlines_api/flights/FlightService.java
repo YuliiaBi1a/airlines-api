@@ -21,13 +21,12 @@ public class FlightService {
         this.airportRepository = airportRepository;
         this.flightCriteriaRepository = flightCriteriaRepository;
     }
-    //Find all flights
+
     public List<FlightDtoResponse> findAllFlights(){
         List<Flight> flightList = flightRepository.findAll();
         return flightList.stream().map(FlightDtoResponse::fromEntity).toList();
     }
 
-    //Post a new flight
     public FlightDtoResponse createFlight(FlightDtoRequest request){
         Airport departureAirport = airportRepository.findById(request.departureAirportId())
                 .orElseThrow(() -> new RuntimeException("Airport with id " + request.departureAirportId()+ " not found"));
@@ -40,7 +39,6 @@ public class FlightService {
         return FlightDtoResponse.fromEntity(saveFlight);
     }
 
-   // Search flight like arrivalAirport, departureAirport, date, available seats
    public List<FlightDtoResponse> filterFlights(String departureAirportCode, String departureAirportName,
                                                 String arrivalAirportCode, String arrivalAirportName,
                                                 LocalDate departureDate, int requiredSeats) {
@@ -50,7 +48,6 @@ public class FlightService {
        return searchFlights.stream().map(FlightDtoResponse::fromEntity).toList();
    }
 
-   // Update flight
     public FlightDtoResponse updateFlight(Long id, FlightDtoRequest request) {
         Flight existingFlight = flightRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flight with id" + id + " not found."));
@@ -73,12 +70,10 @@ public class FlightService {
         return FlightDtoResponse.fromEntity(updatedFlight);
     }
 
-    // Delete a flight
     public void deleteFlightById(Long id) {
         if (!flightRepository.existsById(id)) {
             throw  new RuntimeException("Flight with id " + id + " not found.");
         }
         flightRepository.deleteById(id);
     }
-// TODO método que automáticamente cambia estado de vuelo a EXPIRED si vuelo esta fuera de la fecha
 }

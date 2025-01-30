@@ -15,13 +15,11 @@ public class AirportService {
         this.airportRepository = airportRepository;
     }
 
-    //Get all airports
     public List<AirportDtoResponse> findAllAirports(){
         List<Airport> airportList = airportRepository.findAll();
         return airportList.stream().map(AirportDtoResponse::fromEntity).toList();
     }
 
-    //Post a new airport
     public AirportDtoResponse createAirport(AirportDtoRequest request){
         Optional<Airport> optionalAirport = airportRepository.findByCode(request.code());
         if(optionalAirport.isPresent()){
@@ -32,7 +30,7 @@ public class AirportService {
 
         return AirportDtoResponse.fromEntity(saveAirport);
     }
-    // Search an airport like name or code
+
     public List<AirportDtoResponse> searchByNameOrCode(String name, String code) {
         List<Airport> playerList = airportRepository.findByNameOrCode(name, code);
         if (playerList.isEmpty()) {
@@ -42,7 +40,6 @@ public class AirportService {
                 .map(AirportDtoResponse::fromEntity).toList();
     }
 
-    // Update an airport
     public AirportDtoResponse updateAirport(Long id, AirportDtoRequest request) {
         Airport existingAirport = airportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Airport with id" + id + " not found."));
@@ -61,7 +58,6 @@ public class AirportService {
         return AirportDtoResponse.fromEntity(updatedAirport);
     }
 
-    // Delete an airport
     @Transactional
     public void deleteAirportById(Long id) {
         if (!airportRepository.existsById(id)) {

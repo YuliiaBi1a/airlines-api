@@ -26,7 +26,6 @@ public class ReservationService {
         this.flightRepository = flightRepository;
     }
 
-    //Post a new reservation
     public ReservationDtoResponse createReservation(ReservationDtoRequest request){
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new RuntimeException("User with id " + request.userId()+ " not found"));
@@ -44,7 +43,6 @@ public class ReservationService {
         return ReservationDtoResponse.fromEntity(newReservation);
     }
 
-    //Find all reservations by User ID
     public List<ReservationDtoResponse> findReservationsByUserId(Long userId){
 
         User user = userRepository.findById(userId)
@@ -54,7 +52,6 @@ public class ReservationService {
         return reservationList.stream().map(ReservationDtoResponse::fromEntity).toList();
     }
 
-    //Confirm reservation
     public ReservationDtoResponse updateConfirmReservation(Long id) {
         Reservation existingReservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation with id " + id + " not found."));
@@ -74,7 +71,7 @@ public class ReservationService {
        Reservation updateReservation =  reservationRepository.save(existingReservation);
         return ReservationDtoResponse.fromEntity(updateReservation);
     }
-    //cancelReservation - cambiamos estado a cancelado
+
     public void cancelReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation with id " + reservationId + " not found."));
@@ -91,7 +88,7 @@ public class ReservationService {
         reservation.setStatus(ReservationStatus.CANCELLED);
         reservationRepository.save(reservation);
     }
-    //Clean history reservation: delete canceled and outdated reservations
+
     public void deleteCancelledAndOutdatedReservations(Long userId) {
         List<Reservation> cancelledReservations = reservationRepository.findByStatusAndUserId(ReservationStatus.CANCELLED, userId);
         List<Reservation> outdatedReservations = reservationRepository.findByStatusAndUserId(ReservationStatus.OUTDATED, userId);
@@ -106,16 +103,12 @@ public class ReservationService {
         reservationRepository.deleteAll(reservationsToDelete);
     }
 
-// Automáticamente cambiamos estado de reserva a outdated si vuelo ya esta realizado
-// Testeado con Postman ++
 public void updateOutdatedReservations() {
     List<Reservation> confirmedReservations = reservationRepository.findConfirmedAndOutdatedReservations(LocalDateTime.now());
     confirmedReservations.forEach(reservation -> reservation.setStatus(ReservationStatus.OUTDATED));
     reservationRepository.saveAll(confirmedReservations);
 }
 
-//---------------------------------------------------------------------//
-//Comprobamos si hay asientos disponibles, si has reservado últimos asientos - cambiamos estado de vuelo a FULL
     private static void reserveAvailableSeats(ReservationDtoRequest request, Flight flight) {
         int availableSeats = flight.getAvailableSeats();
         if(availableSeats >= request.reservedSeats()){
@@ -129,7 +122,7 @@ public void updateOutdatedReservations() {
             throw new RuntimeException("Not enough available seats");
         }
     }
-// Restaurar asientos si cancelamos reserva, cambiamos estado de vuelo si es necesario a AVAILABLE
+
     private static void restoreAvailableSeats(Reservation reservation, Flight flight) {
         int availableSeats = flight.getAvailableSeats();
         int reservedSeats = reservation.getReservedSeats();
@@ -139,5 +132,4 @@ public void updateOutdatedReservations() {
             flight.setStatus(FlightStatus.AVAILABLE);
         }
     }
-//TODO método que automáticamente restaura números de asientos si después de 15 minutos estado de reserva sigue PENDING y borra la reserva
 }

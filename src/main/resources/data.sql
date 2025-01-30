@@ -11,7 +11,6 @@ INSERT INTO airports (name, city, country, code) VALUES ('Toronto Pearson Intern
 INSERT INTO airports (name, city, country, code) VALUES ('Los Angeles International Airport', 'Los Angeles', 'USA', 'LAX');
 
 --Flight
-
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
 VALUES (1, 2, '2025-01-10 14:00:00', '2025-01-10T18:00:00', 150, 'EXPIRED', 300.00);
 INSERT INTO flights (departure_airport_id, arrival_airport_id, departure_time, arrival_time, available_seats, status, price)
@@ -48,6 +47,6 @@ INSERT INTO roles_users (role_id, user_id) VALUES (2, 1);
 INSERT INTO roles_users (role_id, user_id) VALUES (2, 2);
 INSERT INTO roles_users (role_id, user_id) VALUES (1, 3);
 
--- Add authorities ("yuliia"  "scope:admin" - full access)
+-- Add authorities
 INSERT INTO users_authorities (user_id, authority_id) VALUES (1, 1);
 INSERT INTO users_authorities (user_id, authority_id) VALUES (2, 2);

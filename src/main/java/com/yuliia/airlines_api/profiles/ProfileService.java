@@ -24,13 +24,11 @@ public class ProfileService {
         this.fileStorageService = fileStorageService;
     }
 
-    // Find all profiles
     public List<ProfileDtoResponse> findAllProfiles() {
         List<Profile> profileList = profileRepository.findAll();
         return profileList.stream().map(ProfileDtoResponse::fromEntity).toList();
     }
 
-    // Create a new profile
     public ProfileDtoResponse createProfile(ProfileDtoRequest request) {
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new RuntimeException("User with id " + request.userId() + " not found"));
@@ -45,14 +43,12 @@ public class ProfileService {
         return ProfileDtoResponse.fromEntity(savedProfile);
     }
 
-    // Find profile by ID
     public ProfileDtoResponse findProfileById(Long id) {
         Profile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Profile with " + id + " not found"));
         return ProfileDtoResponse.fromEntity(profile);
     }
 
-    // Update profile
     public ProfileDtoResponse updateProfile(Long id, ProfileDtoRequest request) {
         Profile existingProfile = profileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Profile with id " + id + " not found."));
@@ -78,8 +74,6 @@ public class ProfileService {
         return ProfileDtoResponse.fromEntity(updatedProfile);
     }
 
-
-    // Delete profile
     public void deleteProfileById(Long id) {
         Optional<Profile> optionalProfile = profileRepository.findById(id);
         if (optionalProfile.isEmpty()) {

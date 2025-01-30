@@ -11,7 +11,7 @@ public class ReservationSchedulerService {
         this.reservationService = reservationService;
     }
 
-    @Scheduled(fixedRate = 60000) //un minuto
+    @Scheduled(fixedRate = 60000)
     public void updateOutdatedReservationsAutomatically() {
         reservationService.updateOutdatedReservations();
     }

@@ -58,30 +58,27 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID"))
                 .authorizeHttpRequests(auth -> auth
-                        //full access
+
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(HttpMethod.POST,  "/api/v1/register/users").permitAll()
-                        .requestMatchers(endpoint + "/auth/token").permitAll() // JWT auth
-                        .requestMatchers(endpoint + "/login").permitAll() //basic auth
+                        .requestMatchers(endpoint + "/auth/token").permitAll()
+                        .requestMatchers(endpoint + "/login").permitAll()
 
-                        // Role access
                         .requestMatchers(endpoint + "/public/**").hasAnyRole("CLIENT", "ADMIN")
                         .requestMatchers("/uploads/images/**").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.GET,"/private/**").hasRole("ADMIN")
-                        // Scope access
 
                         .requestMatchers(endpoint + "/private/airports/**").access(hasAnyScope("AIRPORT:ADMIN", "ADMIN"))
                         .requestMatchers(endpoint + "/private/flights/**").access(hasAnyScope("FLIGHT:ADMIN", "ADMIN"))
-                        .requestMatchers(endpoint + "/private/**").access(hasScope("ADMIN")))
-                        //.anyRequest().authenticated())
-                .userDetailsService(userDetailsService) //for basic auth
+                        .requestMatchers(endpoint + "/private/**").access(hasScope("ADMIN"))
+                        .anyRequest().authenticated())
+                .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
-                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(jwtDecoder()))) // for JWT auth
+                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(jwtDecoder())))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
-
-        http.headers(header -> header.frameOptions(frame -> frame.sameOrigin())); //para h2
+        http.headers(header -> header.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }

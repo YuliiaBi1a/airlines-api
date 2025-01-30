@@ -1,15 +1,12 @@
 package com.yuliia.airlines_api.users;
 
-import com.yuliia.airlines_api.profiles.Profile;
 import com.yuliia.airlines_api.roles.Role;
 import com.yuliia.airlines_api.security.Authority;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.Set;
-
 
 @Entity
 @NoArgsConstructor
@@ -41,5 +38,4 @@ public class User {
         this.username = username;
         this.password = password;
     }
-
 }

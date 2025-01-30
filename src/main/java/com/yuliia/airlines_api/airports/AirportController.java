@@ -16,7 +16,6 @@ public class AirportController {
         this.airportService = airportService;
     }
 
-    //search by name or code / getAll
     @GetMapping("/public/airports")
     public ResponseEntity<List<AirportDtoResponse>> getPlayerList(@RequestParam(required = false) String name,
                                                                  @RequestParam(required = false) String code) {
