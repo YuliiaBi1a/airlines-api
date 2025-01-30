@@ -1,4 +1,4 @@
-![CI img]()
+![CI img](https://github.com/YuliiaBi1a/airlines-api/actions/workflows/ci.yml/badge.svg)
 #  ✈️ Airline Management System — REST API
 
 ## 📖 Table of Contents
@@ -19,7 +19,7 @@ using Spring with Spring Boot and Spring Security. The system will
 enable comprehensive management of users, flights, reservations, 
 and destinations, with advanced features such as secure authentication via Basic Auth and JWT. 
 The system must not allow the selection of flights without available seats or those 
-that have exceeded the deadline. The project will be implemented using Java 21, Maven and PostgreSQL
+that have exceeded the deadline. The project will be implemented using Java 21, Maven and PostgreSQL.
 
 ## 🚀Key Features
 ### 👤 User Management
@@ -52,7 +52,7 @@ The project follows the principle of separation of concerns, using three main la
 
 DTOs are used for data transfer between layers, and global exception handling ensures consistent error responses. Custom exceptions are employed for domain-specific errors, making the codebase maintainable, scalable, and easy to extend.
 
-<img src="src/main/java/com/example/squid_game_api/utils/img.png" alt="img.png" width="250" height="350">
+<img src="src/main/java/com/yuliia/airlines_api/utils/project_structure.png" alt="img.png" width="250" height="350">
 
 ---
 
@@ -164,6 +164,9 @@ git clone https://github.com/YuliiaBi1a/airlines-api
 <img src="src/main/java/com/yuliia/airlines_api/utils/mer.png" alt="img.png" width="300" height="250">
 
 3. **Configure authentication**:
+
+The project includes authentication and authorization mechanisms for private API endpoints, ensuring that only authorized users can access specific resources based on their roles and scopes. Users are authenticated using JWT tokens, and their roles (e.g., ADMIN, CLIENT) and scopes (e.g., "scope:admin", "scope:flight:admin") are validated to grant access to restricted endpoints. Access to private endpoints is controlled by role-based access control (RBAC), where roles define the level of access, while scopes define the specific permissions a user has within those roles. This ensures secure and granular control over the resources, and only users with the appropriate roles and scopes are allowed to perform specific actions on the server.
+
 JWT Auth is used by default.
 To generate the key, run the following command in the terminal:
 ```bash
@@ -211,7 +214,7 @@ version: '3.8'
 services:
   db:
     image: postgres:17
-    container_name: squid_game_postgres_db
+    container_name: airlines_postgres_db
     environment:
       POSTGRES_USER: adm
       POSTGRES_PASSWORD: adm
@@ -249,15 +252,12 @@ mvn spring-boot:run -Dspring.profiles.active=dev
 ---
 
 ## 🧪Unit and Acceptance Tests
-The project includes both unit tests and acceptance tests to ensure the correctness and reliability of the application. Unit tests are written using JUnit 5 and are focused on testing individual components such as services and helper methods. MockMvc is used for testing the REST API endpoints, allowing for simulation of HTTP requests and validation of responses without actually starting a server. Acceptance tests ensure that the system works as expected in an integrated environment, testing the full flow of data and interactions between components. Mockito is used for mocking dependencies in unit tests to isolate the logic and make the tests more efficient and focused.
 
+The project includes both unit tests and acceptance tests to ensure the correctness and reliability of the application. Unit tests are written using JUnit 5 and focus on testing individual components such as services and helper methods. MockMvc is used for testing the REST API endpoints, allowing for the simulation of HTTP requests and validation of responses without actually starting a server. Acceptance tests ensure that the system works as expected in an integrated environment, testing the full flow of data and interactions between components. Mockito is used for mocking dependencies in unit tests to isolate the logic and make the tests more efficient and focused.
+
+Additionally, security and authentication tests are implemented to verify access control and token validation. These tests cover scenarios such as role-based access to protected resources, JWT token generation and processing, and validation of data, as well as the cleaning of outdated records through API calls.
 ---
 
 ---
-
-#### Project documentation
-- First run App.
-- Use [link](http://localhost:8080/swagger-ui/index.html) to read project documentation genereted by Springdoc OpenAPI.
-
-#### Project made by [Yuliia Bila](https://github.com/YuliiaBi1a)
+#### Project made by [Yuliia Bila](https://github.com/YuliiaBi1a) like part of Bootcamp ESVAL6 Backend & AWS Cloud
 ( ˶ˆ ᗜ ˆ˵ ) 
