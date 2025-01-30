@@ -29,8 +29,8 @@ public class TokenService {
         // recuperar scopes de usuario
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                //.filter(authority -> !authority.startsWith("ROLE"))
-                .filter(auth -> auth.startsWith("scope:"))  // Тільки scope:*
+                .filter(authority -> !authority.startsWith("ROLE"))
+                .filter(auth -> auth.startsWith("scope:"))
                 .map(auth -> auth.replace("scope:", ""))
                 .collect(Collectors.joining(" "));
 

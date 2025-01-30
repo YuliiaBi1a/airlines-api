@@ -41,10 +41,12 @@ INSERT INTO authorities (id, name) VALUES (3, 'scope:AIRPORT:ADMIN');
 --User ADM
 INSERT INTO users (id, username, password) VALUES (1, 'yuliia', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
 INSERT INTO users (id, username, password) VALUES (2, 'yuli', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
+INSERT INTO users (id, username, password) VALUES (3, 'client', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
 
 --Users_Roles
 INSERT INTO roles_users (role_id, user_id) VALUES (2, 1);
 INSERT INTO roles_users (role_id, user_id) VALUES (2, 2);
+INSERT INTO roles_users (role_id, user_id) VALUES (1, 3);
 
 -- Add authorities ("yuliia"  "scope:admin" - full access)
 INSERT INTO users_authorities (user_id, authority_id) VALUES (1, 1);
