@@ -3,24 +3,30 @@ package com.yuliia.airlines_api;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yuliia.airlines_api.airports.AirportDtoRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -31,6 +37,9 @@ public class AuthSecurityTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     MockMvc mockMvc;
 
     @BeforeEach
@@ -39,20 +48,6 @@ public class AuthSecurityTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
     }
-
-/*    private String generateJwtToken(String username, String... scopes) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("scope", String.join("scope", scopes));
-
-        return Jwt.withTokenValue("test-token")
-                .header("alg", "HS512")
-                .subject(username)
-                .claims(c -> c.putAll(claims))
-                .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plusSeconds(3600))
-                .build()
-                .getTokenValue();
-    }*/
 
     @Test
     @WithMockUser(roles = "CLIENT")
@@ -73,7 +68,6 @@ public class AuthSecurityTest {
         mockMvc.perform(get("/api/v1/login"))
                 .andExpect(unauthenticated());
     }
-
 
     @Test
     void testAdminUserCanLogin() throws Exception {
