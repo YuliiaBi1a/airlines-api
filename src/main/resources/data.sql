@@ -37,19 +37,14 @@ INSERT INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
 INSERT INTO authorities (id, name) VALUES (1, 'scope:ADMIN');
 INSERT INTO authorities (id, name) VALUES (2, 'scope:FLIGHT:ADMIN');
 INSERT INTO authorities (id, name) VALUES (3, 'scope:AIRPORT:ADMIN');
-INSERT INTO authorities (id, name) VALUES (4, 'scope:flight:write');
-INSERT INTO authorities (id, name) VALUES (5, 'scope:flight:read');
-INSERT INTO authorities (id, name) VALUES (6, 'scope:flight:delete');
-
 
 --User ADM
 INSERT INTO users (id, username, password) VALUES (1, 'yuliia', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
 INSERT INTO users (id, username, password) VALUES (2, 'yuli', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
-INSERT INTO users (id, username, password) VALUES (3, 'bila', '$2a$12$KEr.WnBpkoLhdHT1RMdiNuve.MlqbcQj1zuyDF46VQ6WiNjSpRroe');
+
 --Users_Roles
 INSERT INTO roles_users (role_id, user_id) VALUES (2, 1);
 INSERT INTO roles_users (role_id, user_id) VALUES (2, 2);
-INSERT INTO roles_users (role_id, user_id) VALUES (1, 3);
 
 -- Add authorities ("yuliia"  "scope:admin" - full access)
 INSERT INTO users_authorities (user_id, authority_id) VALUES (1, 1);
