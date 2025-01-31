@@ -1,6 +1,9 @@
 package com.yuliia.airlines_api.global.exceptions;
 
+import com.yuliia.airlines_api.reservation.exceptions.LateCancellationException;
 import com.yuliia.airlines_api.reservation.exceptions.LockExpirationException;
+import com.yuliia.airlines_api.reservation.exceptions.NotEnoughSeatsException;
+import com.yuliia.airlines_api.reservation.exceptions.ReservationAlreadyCancelledException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,34 +26,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDuplicateId(LockExpirationException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
-  /*
-    @ExceptionHandler(NoRegistersFoundException.class)
-    public ResponseEntity<String> handleNotFoundRegisters(NoRegistersFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+
+    @ExceptionHandler(LateCancellationException.class)
+    public ResponseEntity<String> handleLateCancellation(LateCancellationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(NoIdFoundException.class)
-    public ResponseEntity<String> handleNotFoundId(NoIdFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    @ExceptionHandler(ReservationAlreadyCancelledException.class)
+    public ResponseEntity<String> handleAlreadyCancelled(ReservationAlreadyCancelledException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(NotFinishGameException.class)
-    public ResponseEntity<String> handleNoFinishGame(NotFinishGameException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(NotEnoughSeatsException.class)
+    public ResponseEntity<String> handleNotEnoughSeats(NotEnoughSeatsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
-    @ExceptionHandler(DependencyException.class)
-    public ResponseEntity<String> handleDependencyExist(DependencyException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-    }
-    @ExceptionHandler(NoPlayerNameFoundException.class)
-    public ResponseEntity<String> handleNotFoundName(NoPlayerNameFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(NoPlayingException.class)
-    public ResponseEntity<String> handleNotFoundPlayingPlayers(NoPlayingException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }*/
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,String>>handleNotValidException(MethodArgumentNotValidException exception){
@@ -60,6 +50,5 @@ public class GlobalExceptionHandler {
         }
         return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
     }
-
 
 }

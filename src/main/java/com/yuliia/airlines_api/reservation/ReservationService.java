@@ -4,7 +4,10 @@ import com.yuliia.airlines_api.flights.Flight;
 import com.yuliia.airlines_api.flights.FlightRepository;
 import com.yuliia.airlines_api.flights.FlightStatus;
 import com.yuliia.airlines_api.global.exceptions.NoIdFoundException;
+import com.yuliia.airlines_api.reservation.exceptions.LateCancellationException;
 import com.yuliia.airlines_api.reservation.exceptions.LockExpirationException;
+import com.yuliia.airlines_api.reservation.exceptions.NotEnoughSeatsException;
+import com.yuliia.airlines_api.reservation.exceptions.ReservationAlreadyCancelledException;
 import com.yuliia.airlines_api.users.User;
 import com.yuliia.airlines_api.users.UserRepository;
 import org.springframework.stereotype.Service;
@@ -84,10 +87,10 @@ public class ReservationService {
         Flight flight = reservation.getFlight();
 
         if (reservation.getStatus().equals(ReservationStatus.CANCELLED)) {
-            throw new RuntimeException("Reservation is already cancelled.");
+            throw new ReservationAlreadyCancelledException("Reservation is already cancelled.");
         }
         if (flight.getDepartureTime().isBefore(LocalDateTime.now().plusHours(24))) {
-            throw new RuntimeException("Reservations can only be cancelled at least 24 hours before the flight departure."); /////////////
+            throw new LateCancellationException("Reservations can only be cancelled at least 24 hours before the flight departure.");
         }
         restoreAvailableSeats(reservation, flight);
         reservation.setStatus(ReservationStatus.CANCELLED);
@@ -128,7 +131,7 @@ public void updateOutdatedReservations() {
                 flight.setStatus(FlightStatus.FULL);
             }
         } else {
-            throw new RuntimeException("Not enough available seats"); //////////////////////
+            throw new NotEnoughSeatsException("Not enough available seats");
         }
     }
 // Restaurar asientos si cancelamos reserva, cambiamos estado de vuelo si es necesario a AVAILABLE
