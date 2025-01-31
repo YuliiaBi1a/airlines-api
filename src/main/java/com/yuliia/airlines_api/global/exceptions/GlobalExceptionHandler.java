@@ -1,9 +1,6 @@
 package com.yuliia.airlines_api.global.exceptions;
 
-import com.yuliia.airlines_api.reservation.exceptions.LateCancellationException;
-import com.yuliia.airlines_api.reservation.exceptions.LockExpirationException;
-import com.yuliia.airlines_api.reservation.exceptions.NotEnoughSeatsException;
-import com.yuliia.airlines_api.reservation.exceptions.ReservationAlreadyCancelledException;
+import com.yuliia.airlines_api.reservation.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -40,6 +37,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotEnoughSeatsException.class)
     public ResponseEntity<String> handleNotEnoughSeats(NotEnoughSeatsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ReservationTooLateException.class)
+    public ResponseEntity<String> handleReservationTooLate(ReservationTooLateException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

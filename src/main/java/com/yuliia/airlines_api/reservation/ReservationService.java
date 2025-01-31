@@ -4,10 +4,7 @@ import com.yuliia.airlines_api.flights.Flight;
 import com.yuliia.airlines_api.flights.FlightRepository;
 import com.yuliia.airlines_api.flights.FlightStatus;
 import com.yuliia.airlines_api.global.exceptions.NoIdFoundException;
-import com.yuliia.airlines_api.reservation.exceptions.LateCancellationException;
-import com.yuliia.airlines_api.reservation.exceptions.LockExpirationException;
-import com.yuliia.airlines_api.reservation.exceptions.NotEnoughSeatsException;
-import com.yuliia.airlines_api.reservation.exceptions.ReservationAlreadyCancelledException;
+import com.yuliia.airlines_api.reservation.exceptions.*;
 import com.yuliia.airlines_api.users.User;
 import com.yuliia.airlines_api.users.UserRepository;
 import org.springframework.stereotype.Service;
@@ -40,7 +37,7 @@ public class ReservationService {
                 .orElseThrow(() -> new NoIdFoundException("Flight with id " + request.flightId()+ " not found"));
 
         if (LocalDateTime.now().isAfter(flight.getDepartureTime())) {
-            throw new RuntimeException("Reservations can only be realized before the flight departure."); ////////////////
+            throw new ReservationTooLateException("Reservations can only be realized before the flight departure.");
         }
         reserveAvailableSeats(request, flight);
 
