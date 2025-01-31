@@ -72,7 +72,7 @@ public class ReservationService {
         return ReservationDtoResponse.fromEntity(updateReservation);
     }
 
-    public void cancelReservation(Long reservationId) {
+    public ReservationDtoResponse cancelReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation with id " + reservationId + " not found."));
 
@@ -86,7 +86,9 @@ public class ReservationService {
         }
         restoreAvailableSeats(reservation, flight);
         reservation.setStatus(ReservationStatus.CANCELLED);
-        reservationRepository.save(reservation);
+        Reservation canceledReservation = reservationRepository.save(reservation);
+
+        return ReservationDtoResponse.fromEntity(canceledReservation);
     }
 
     public void deleteCancelledAndOutdatedReservations(Long userId) {

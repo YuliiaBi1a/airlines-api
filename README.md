@@ -254,7 +254,6 @@ mvn spring-boot:run -Dspring.profiles.active=dev
 ## 🧪Unit and Acceptance Tests
 
 The project includes both unit tests and acceptance tests to ensure the correctness and reliability of the application. Unit tests are written using JUnit 5 and focus on testing individual components such as services and helper methods. MockMvc is used for testing the REST API endpoints, allowing for the simulation of HTTP requests and validation of responses without actually starting a server. Acceptance tests ensure that the system works as expected in an integrated environment, testing the full flow of data and interactions between components. Mockito is used for mocking dependencies in unit tests to isolate the logic and make the tests more efficient and focused.
-
 Additionally, security and authentication tests are implemented to verify access control and token validation. These tests cover scenarios such as role-based access to protected resources, JWT token generation and processing, and validation of data, as well as the cleaning of outdated records through API calls.
 ---
 

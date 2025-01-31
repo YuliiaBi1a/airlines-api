@@ -38,9 +38,9 @@ public class ReservationController {
     }
 
     @PutMapping("/public/reservations/cancelled/{reservationId}")
-    public ResponseEntity<String> updateReservationStatusToCancelled(@PathVariable Long reservationId) {
-        reservationService.cancelReservation(reservationId);
-        return new ResponseEntity<>("Reservation has been cancelled", HttpStatus.OK);
+    public ResponseEntity<ReservationDtoResponse> updateReservationStatusToCancelled(@PathVariable Long reservationId) {
+        ReservationDtoResponse canceledReservation = reservationService.cancelReservation(reservationId);
+        return new ResponseEntity<>(canceledReservation, HttpStatus.OK);
     }
 
     @DeleteMapping("/public/reservations/history/clean/{userId}")
