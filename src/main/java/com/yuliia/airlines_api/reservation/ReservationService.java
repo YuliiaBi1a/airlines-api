@@ -3,6 +3,8 @@ package com.yuliia.airlines_api.reservation;
 import com.yuliia.airlines_api.flights.Flight;
 import com.yuliia.airlines_api.flights.FlightRepository;
 import com.yuliia.airlines_api.flights.FlightStatus;
+import com.yuliia.airlines_api.global.exceptions.NoIdFoundException;
+import com.yuliia.airlines_api.reservation.exceptions.LockExpirationException;
 import com.yuliia.airlines_api.users.User;
 import com.yuliia.airlines_api.users.UserRepository;
 import org.springframework.stereotype.Service;
@@ -29,13 +31,13 @@ public class ReservationService {
     //Post a new reservation
     public ReservationDtoResponse createReservation(ReservationDtoRequest request){
         User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new RuntimeException("User with id " + request.userId()+ " not found"));
+                .orElseThrow(() -> new NoIdFoundException("User with id " + request.userId()+ " not found"));
 
         Flight flight = flightRepository.findById(request.flightId())
-                .orElseThrow(() -> new RuntimeException("Flight with id " + request.flightId()+ " not found"));
+                .orElseThrow(() -> new NoIdFoundException("Flight with id " + request.flightId()+ " not found"));
 
         if (LocalDateTime.now().isAfter(flight.getDepartureTime())) {
-            throw new RuntimeException("Reservations can only be realized before the flight departure.");
+            throw new RuntimeException("Reservations can only be realized before the flight departure."); ////////////////
         }
         reserveAvailableSeats(request, flight);
 
@@ -48,7 +50,7 @@ public class ReservationService {
     public List<ReservationDtoResponse> findReservationsByUserId(Long userId){
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User with id " + userId+ " not found"));
+                .orElseThrow(() -> new NoIdFoundException("User with id " + userId+ " not found"));
 
         List<Reservation> reservationList = reservationRepository.findByUserId(userId);
         return reservationList.stream().map(ReservationDtoResponse::fromEntity).toList();
@@ -57,7 +59,7 @@ public class ReservationService {
     //Confirm reservation
     public ReservationDtoResponse updateConfirmReservation(Long id) {
         Reservation existingReservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation with id " + id + " not found."));
+                .orElseThrow(() -> new NoIdFoundException("Reservation with id " + id + " not found."));
 
         Flight flight = existingReservation.getFlight();
         LocalTime currentTime = LocalTime.now();
@@ -69,7 +71,7 @@ public class ReservationService {
         } else {
             restoreAvailableSeats(existingReservation, flight);
             reservationRepository.deleteById(id);
-            throw new RuntimeException("The lock expiration time has passed, please start new reservation.");
+            throw new LockExpirationException("The lock expiration time has passed, please start new reservation.");
         }
        Reservation updateReservation =  reservationRepository.save(existingReservation);
         return ReservationDtoResponse.fromEntity(updateReservation);
@@ -77,7 +79,7 @@ public class ReservationService {
     //cancelReservation - cambiamos estado a cancelado
     public void cancelReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation with id " + reservationId + " not found."));
+                .orElseThrow(() -> new NoIdFoundException("Reservation with id " + reservationId + " not found."));
 
         Flight flight = reservation.getFlight();
 
@@ -85,7 +87,7 @@ public class ReservationService {
             throw new RuntimeException("Reservation is already cancelled.");
         }
         if (flight.getDepartureTime().isBefore(LocalDateTime.now().plusHours(24))) {
-            throw new RuntimeException("Reservations can only be cancelled at least 24 hours before the flight departure.");
+            throw new RuntimeException("Reservations can only be cancelled at least 24 hours before the flight departure."); /////////////
         }
         restoreAvailableSeats(reservation, flight);
         reservation.setStatus(ReservationStatus.CANCELLED);
@@ -101,7 +103,7 @@ public class ReservationService {
         reservationsToDelete.addAll(outdatedReservations);
 
         if (reservationsToDelete.isEmpty()) {
-            throw new RuntimeException("No cancelled or outdated reservations found for user with ID: " + userId);
+            throw new NoIdFoundException("No cancelled or outdated reservations found for user with ID: " + userId);
         }
         reservationRepository.deleteAll(reservationsToDelete);
     }
@@ -126,7 +128,7 @@ public void updateOutdatedReservations() {
                 flight.setStatus(FlightStatus.FULL);
             }
         } else {
-            throw new RuntimeException("Not enough available seats");
+            throw new RuntimeException("Not enough available seats"); //////////////////////
         }
     }
 // Restaurar asientos si cancelamos reserva, cambiamos estado de vuelo si es necesario a AVAILABLE
